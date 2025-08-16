@@ -9,7 +9,27 @@
 <body class="bg-gray-100">
 
   <!-- Dynamic Header -->
-  <div id="header"></div>
+ <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+  <div class="flex items-center space-x-6">
+    <h1 class="text-lg font-bold">My App</h1>
+            <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
+          Logout
+        </button>
+    <span id="welcome" class="font-medium"></span>
+      <nav id="navLinks">
+    <ul class="flex space-x-4">
+      <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
+      <li><a href="profile.html" class="hover:underline">Profile</a></li>
+      <li>
+
+      </li>
+    </ul>
+  </nav>
+  </div>
+
+
+</header>
+
 
   <!-- Page Content -->
   <main class="p-8">
