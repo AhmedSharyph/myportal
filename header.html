@@ -1,0 +1,15 @@
+<div class="bg-gray-800 text-white p-4 flex justify-between items-center">
+  <div class="text-lg font-bold">Admin Panel</div>
+  <nav class="flex gap-4">
+    <a href="dashboard.html" class="hover:underline">Dashboard</a>
+    <a href="admin_sheets.html" class="hover:underline">Sheets</a>
+    <a href="profile.html" class="hover:underline">Profile</a>
+    <button id="logoutBtn" class="bg-red-600 px-3 py-1 rounded hover:bg-red-700">Logout</button>
+  </nav>
+</div>
+<script>
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.clear();
+  window.location.href = "index.html";
+});
+</script>
