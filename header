@@ -1,0 +1,51 @@
+<header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+  <!-- Left side: App name + Welcome -->
+  <div class="flex items-center space-x-6">
+    <h1 class="text-lg font-bold">My App</h1>
+    <span id="welcome" class="font-medium"></span>
+  </div>
+
+  <!-- Right side: Navigation -->
+  <nav id="navLinks" class="hidden">
+    <ul class="flex space-x-4">
+      <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
+      <li><a href="profile.html" class="hover:underline">Profile</a></li>
+      <li>
+        <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
+          Logout
+        </button>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  (function() {
+    // 🚫 Block direct access to header.html (always redirect)
+    if (window.location.pathname.endsWith("header.html")) {
+      window.location.replace("index.html");
+      return;
+    }
+
+    const email = localStorage.getItem("userEmail") || localStorage.getItem("loggedInUser");
+
+    if (!email) {
+      // Not logged in → redirect
+      window.location.replace("index.html");
+    } else {
+      // Show welcome + nav only if logged in
+      document.getElementById("welcome").innerText = `Welcome, ${email}`;
+      document.getElementById("navLinks").classList.remove("hidden");
+    }
+
+    // Handle logout
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("userEmail");
+        localStorage.removeItem("loggedInUser");
+        window.location.replace("index.html");
+      });
+    }
+  })();
+</script>
