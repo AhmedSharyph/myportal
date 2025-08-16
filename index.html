@@ -5,6 +5,12 @@
   <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    // Redirect if already logged in
+    const email = localStorage.getItem("userEmail");
+    if (email) {
+      window.location.replace("dashboard.html");
+    }
+
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdSJ_2mNS8XODvPlGJFPICHYUIA8qc26PodQ1f7Z0oWbOF430LMLo_3vIeMIK66UGzuw/exec";
 
     async function loginUser(e) {
