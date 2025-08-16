@@ -1,0 +1,12 @@
+<div class="bg-gray-200 text-gray-700 p-4 text-center mt-8">
+  &copy; <span id="copyright-year"></span> My App. All rights reserved.
+  <br/>
+  Developed by <a href="https://ahmedshareef.mv" class="text-blue-600 hover:underline" target="_blank">AhmedShareef</a>
+</div>
+
+<script>
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  document.getElementById("copyright-year").textContent =
+    startYear === currentYear ? startYear : `${startYear} - ${currentYear}`;
+</script>
