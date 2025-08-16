@@ -3,25 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="auth.js"></script>
 </head>
-<body class="bg-gray-100">
+<body>
 
   <!-- Dynamic Header -->
   <div id="header"></div>
 
   <!-- Main Content -->
-  <main class="p-8">
-    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+  <main>
+    <h2>Dashboard</h2>
     <p>Welcome to your dashboard! Accessible only after login.</p>
 
     <!-- Example cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-      <div class="bg-white p-4 rounded shadow">Card 1</div>
-      <div class="bg-white p-4 rounded shadow">Card 2</div>
-      <div class="bg-white p-4 rounded shadow">Card 3</div>
-    </div>
+    <div>Card 1</div>
+    <div>Card 2</div>
+    <div>Card 3</div>
   </main>
 
   <!-- Dynamic Footer -->
@@ -44,7 +41,10 @@
     loadComponent("footer", "footer.html");
 
     // Ensure user is logged in
-    requireLogin();
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      window.location.replace("index.html");
+    }
   </script>
 
 </body>
