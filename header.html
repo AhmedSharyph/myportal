@@ -1,11 +1,9 @@
 <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <!-- Left side: App name + Welcome -->
   <div class="flex items-center space-x-6">
     <h1 class="text-lg font-bold">My App</h1>
     <span id="welcome" class="font-medium"></span>
   </div>
 
-  <!-- Right side: Navigation -->
   <nav id="navLinks" class="hidden">
     <ul class="flex space-x-4">
       <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
@@ -19,31 +17,13 @@
   </nav>
 </header>
 
+<script src="auth.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // 🚫 Block direct access to header.html
-    if (window.location.pathname.endsWith("header.html")) {
-      window.location.replace("index.html");
-      return;
-    }
-
-    // 🔒 Check login
-    const email = localStorage.getItem("userEmail") || localStorage.getItem("loggedInUser");
-    if (!email) {
-      window.location.replace("index.html");
-      return;
-    }
-
-    // ✅ Show welcome + nav
-    document.getElementById("welcome").innerText = `Welcome, ${email}`;
-    document.getElementById("navLinks").classList.remove("hidden");
-
-    // 🚪 Handle logout
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("userEmail");
-      localStorage.removeItem("loggedInUser");
-      window.location.replace("index.html");
-    });
-  });
+  // 🚫 Prevent direct access to header.html
+  if (window.location.pathname.endsWith("header.html")) {
+    window.location.replace("index.html");
+  } else {
+    // Initialize header elements
+    initHeader();
+  }
 </script>
