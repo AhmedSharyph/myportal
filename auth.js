@@ -1,10 +1,16 @@
 // auth.js
 
+/**
+ * Returns the logged-in user email, or null if not logged in
+ */
 function getLoggedInUser() {
   return localStorage.getItem("userEmail") || localStorage.getItem("loggedInUser");
 }
 
-// Check login status and redirect if not logged in
+/**
+ * Ensures user is logged in. Redirects to login page if not.
+ * Returns the user email if logged in.
+ */
 function requireLogin() {
   const email = getLoggedInUser();
   if (!email) {
@@ -14,14 +20,21 @@ function requireLogin() {
   return email;
 }
 
-// Handle logout (clear storage + redirect)
+/**
+ * Logout function: clears user info and redirects to login page
+ */
 function logout() {
   localStorage.removeItem("userEmail");
   localStorage.removeItem("loggedInUser");
   window.location.replace("index.html");
 }
 
-// Initialize header elements: welcome message + nav visibility
+/**
+ * Initializes header elements:
+ * - Shows welcome message
+ * - Reveals nav links
+ * - Attaches logout handler
+ */
 function initHeader() {
   document.addEventListener("DOMContentLoaded", () => {
     const email = requireLogin();
