@@ -2,13 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Children Aged 0-2 Months</title>
+  <title>Dashboard - Children Aged 0-2 Months</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 p-6">
-  <div class="max-w-full mx-auto">
-    <h1 class="text-2xl font-bold mb-4 text-gray-800">Children Aged 0-2 Months</h1>
+<body class="bg-gray-100">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <h1 class="text-xl font-bold">My App</h1>
+      <span id="welcome" class="text-sm font-thin"></span>
+    </div>
+    <div class="flex space-x-4">
+      <a href="dashboard.html" class="hover:underline">Dashboard</a>
+      <a href="profile.html" class="hover:underline">Profile</a>
+      <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-8">
+    <h2 class="text-2xl font-bold mb-4">Children Aged 0-2 Months</h2>
+    <p class="mb-4">Below is the list of children eligible based on age, with personal and vaccination details.</p>
+
     <div class="overflow-x-auto bg-white shadow rounded-lg">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-100">
@@ -34,16 +50,41 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </main>
 
+  <!-- Footer -->
+  <footer class="bg-gray-200 text-gray-700 p-4 text-center mt-8">
+    &copy; <span id="year"></span> My App. Developed by 
+    <a href="https://ahmedshareef.mv" target="_blank" class="text-blue-600 hover:underline">AhmedShareef</a>
+  </footer>
+
+  <!-- Scripts -->
   <script>
+    // Show current year
+    document.getElementById("year").innerText = new Date().getFullYear();
+
+    // Display welcome message
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      window.location.replace("index.html");
+    } else {
+      document.getElementById("welcome").innerText = `Welcome, ${email}`;
+    }
+
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("loggedInUser");
+      window.location.replace("index.html");
+    });
+
+    // Fetch children 0-2 months and populate table
     const DATA_URL = 'https://script.google.com/macros/s/AKfycbyBlkPOqEsEZJYn1J_BbDC-4rF9utdn8rbHPxmT_mYY2UVwsqm8CuMORa3iSX0qHjAc/exec';
 
     async function fetchChildren() {
       try {
         const response = await fetch(DATA_URL);
         const data = await response.json();
-
         const today = new Date();
         const filtered = data.filter(child => {
           const dob = new Date(child.DOB);
@@ -60,7 +101,7 @@
           filtered.forEach(child => {
             tbody.innerHTML += `
               <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2 text-gray-800">${child['MDV Number'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child['Currently Living in Sh Funadhoo'] || '-'}</td>
                 <td class="px-4 py-2 text-gray-800">${child['Foolhumaa Form Number'] || '-'}</td>
                 <td class="px-4 py-2 text-gray-800">${child['Beneficiary Naitonal ID'] || '-'}</td>
                 <td class="px-4 py-2 text-gray-800">${child['Full Name of the Beneficiary'] || '-'}</td>
@@ -76,7 +117,6 @@
             `;
           });
         }
-
       } catch (error) {
         console.error('Error fetching data:', error);
         const tbody = document.getElementById('childrenTable');
@@ -86,5 +126,6 @@
 
     fetchChildren();
   </script>
+
 </body>
 </html>
