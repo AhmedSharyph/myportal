@@ -1,10 +1,42 @@
-function logout(){
-  localStorage.removeItem("userEmail");
-  localStorage.removeItem("isAdmin");
-  window.location.href = "index.html";
+// auth.js
+
+function getLoggedInUser() {
+  return localStorage.getItem("userEmail") || localStorage.getItem("loggedInUser");
 }
 
-// Optional: auto-logout after 10 minutes
-let logoutTimer = setTimeout(()=>logout(), 10*60*1000);
-document.addEventListener("mousemove",()=>clearTimeout(logoutTimer));
-document.addEventListener("keypress",()=>clearTimeout(logoutTimer));
+// Check login status and redirect if not logged in
+function requireLogin() {
+  const email = getLoggedInUser();
+  if (!email) {
+    window.location.replace("index.html");
+    return null;
+  }
+  return email;
+}
+
+// Handle logout (clear storage + redirect)
+function logout() {
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("loggedInUser");
+  window.location.replace("index.html");
+}
+
+// Initialize header elements: welcome message + nav visibility
+function initHeader() {
+  document.addEventListener("DOMContentLoaded", () => {
+    const email = requireLogin();
+    if (!email) return;
+
+    // Show welcome message
+    const welcomeEl = document.getElementById("welcome");
+    if (welcomeEl) welcomeEl.innerText = `Welcome, ${email}`;
+
+    // Show nav links
+    const navLinks = document.getElementById("navLinks");
+    if (navLinks) navLinks.classList.remove("hidden");
+
+    // Attach logout
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) logoutBtn.addEventListener("click", logout);
+  });
+}
