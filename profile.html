@@ -2,23 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile - My App</title>
+  <title>Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="auth.js"></script>
 </head>
-<body class="min-h-screen flex flex-col bg-gray-50">
-  <div id="header-placeholder"></div>
+<body class="bg-gray-100">
 
-  <main class="flex-1 p-6">
-    <h2 class="text-2xl font-bold mb-4">My Profile</h2>
-    <div class="bg-white p-4 rounded shadow">
-      <p><strong>Name:</strong> <span id="profileName"></span></p>
+  <!-- Dynamic Header -->
+  <div id="header"></div>
+
+  <!-- Profile Content -->
+  <main id="mainContent" class="p-8">
+    <h2 class="text-2xl font-bold mb-4">Profile</h2>
+    <p>Manage your profile information below:</p>
+
+    <div class="bg-white p-6 rounded shadow mt-4 max-w-md">
       <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+      <p><strong>Username:</strong> <span id="profileUsername"></span></p>
+      <!-- Add more profile fields as needed -->
     </div>
   </main>
 
-  <div id="footer-placeholder"></div>
+  <!-- Dynamic Footer -->
+  <div id="footer"></div>
 
-  <script src="main.js"></script>
+  <script>
+    async function loadComponent(id, file) {
+      const res = await fetch(file);
+      const html = await res.text();
+      document.getElementById(id).innerHTML = html;
+    }
+
+    loadComponent("header", "header.html");
+    loadComponent("footer", "footer.html");
+
+    // Ensure user is logged in
+    const email = requireLogin();
+    // Display user info
+    document.getElementById("profileEmail").innerText = email;
+    document.getElementById("profileUsername").innerText = email.split("@")[0];
+  </script>
 </body>
 </html>
