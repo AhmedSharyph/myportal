@@ -11,12 +11,12 @@
   <!-- Dynamic Header -->
   <div id="header"></div>
 
-  <!-- Dashboard Content -->
-  <main id="mainContent" class="p-8">
+  <!-- Main Content -->
+  <main class="p-8">
     <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
-    <p>Welcome to your dashboard! This page is only accessible after login.</p>
+    <p>Welcome to your dashboard! Accessible only after login.</p>
 
-    <!-- Example dashboard cards -->
+    <!-- Example cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
       <div class="bg-white p-4 rounded shadow">Card 1</div>
       <div class="bg-white p-4 rounded shadow">Card 2</div>
@@ -32,13 +32,20 @@
       const res = await fetch(file);
       const html = await res.text();
       document.getElementById(id).innerHTML = html;
+
+      // Run initHeader after header is loaded
+      if (id === "header") {
+        initHeader();
+      }
     }
 
+    // Load header & footer
     loadComponent("header", "header.html");
     loadComponent("footer", "footer.html");
 
     // Ensure user is logged in
     requireLogin();
   </script>
+
 </body>
 </html>
