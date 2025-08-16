@@ -76,16 +76,60 @@ window.addEventListener('storage', (event) => {
 </script>
 
   <!-- Main Content -->
-  <main class="p-8">
-    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
-    <p>Welcome to your dashboard! Accessible only after login.</p>
+<main class="p-8">
+  <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+  <p>Welcome to your dashboard! Accessible only after login.</p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-      <div class="bg-white p-4 rounded shadow">Card 1</div>
-      <div class="bg-white p-4 rounded shadow">Card 2</div>
-      <div class="bg-white p-4 rounded shadow">Card 3</div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+
+    <!-- Existing Cards -->
+    <div class="bg-white p-4 rounded shadow">Card 1</div>
+    <div class="bg-white p-4 rounded shadow">Card 2</div>
+    
+    <!-- Menu Link Update Widget Card -->
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="text-lg font-semibold mb-2">Add Menu Link</h3>
+      <input id="menuLabel" type="text" placeholder="Label" class="w-full mb-2 p-2 border rounded" />
+      <input id="menuURL" type="text" placeholder="URL" class="w-full mb-2 p-2 border rounded" />
+      <button id="addMenuBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full">Add Link</button>
+      <p id="menuMsg" class="text-sm mt-2 text-green-600"></p>
     </div>
-  </main>
+
+    <div class="bg-white p-4 rounded shadow">Card 3</div>
+  </div>
+</main>
+
+<script>
+  const addMenuBtn = document.getElementById('addMenuBtn');
+  const menuLabel = document.getElementById('menuLabel');
+  const menuURL = document.getElementById('menuURL');
+  const menuMsg = document.getElementById('menuMsg');
+
+  addMenuBtn.addEventListener('click', () => {
+    const label = menuLabel.value.trim();
+    const url = menuURL.value.trim();
+
+    if (!label || !url) {
+      menuMsg.textContent = "Please enter both Label and URL!";
+      menuMsg.classList.remove("text-green-600");
+      menuMsg.classList.add("text-red-600");
+      return;
+    }
+
+    const menuLinks = JSON.parse(localStorage.getItem('menuLinks') || '[]');
+    menuLinks.push({ label, url });
+    localStorage.setItem('menuLinks', JSON.stringify(menuLinks));
+
+    menuMsg.textContent = "Menu link added! Refresh other pages to see changes.";
+    menuMsg.classList.remove("text-red-600");
+    menuMsg.classList.add("text-green-600");
+
+    // Clear inputs
+    menuLabel.value = "";
+    menuURL.value = "";
+  });
+</script>
+
 
   <!-- Footer -->
   <footer class="bg-gray-200 text-gray-700 p-4 text-center mt-8">
