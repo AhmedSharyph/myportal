@@ -7,18 +7,54 @@
 </head>
 <body class="bg-gray-100">
 
-  <!-- Header -->
-  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-    <div class="flex items-center space-x-4">
-      <h1 class="text-xl font-bold">My App</h1>
-      <span id="welcome" class="text-sm font-thin"></span>
-    </div>
-    <div class="flex space-x-4">
-      <a href="dashboard.html" class="hover:underline">Dashboard</a>
-      <a href="profile.html" class="hover:underline">Profile</a>
-      <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
-    </div>
-  </header>
+<header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+  <!-- Left: App Name + Welcome -->
+  <div class="flex items-center space-x-4">
+    <h1 class="text-xl font-bold">My App</h1>
+    <span id="welcome" class="text-sm font-thin"></span>
+  </div>
+
+  <!-- Right: Navigation + Logout -->
+  <div class="flex space-x-4">
+    <ul id="navMenu" class="flex space-x-4">
+      <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
+      <li><a href="profile.html" class="hover:underline">Profile</a></li>
+    </ul>
+    <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+  </div>
+</header>
+<script>
+function loadMenuLinks() {
+  const navMenu = document.getElementById('navMenu');
+  if (!navMenu) return;
+
+  // Remove previous dynamic links
+  navMenu.querySelectorAll('.dynamic-link').forEach(li => li.remove());
+
+  // Load from localStorage
+  const menuLinks = JSON.parse(localStorage.getItem('menuLinks') || '[]');
+  menuLinks.forEach(link => {
+    const li = document.createElement('li');
+    li.className = "dynamic-link";
+    const a = document.createElement('a');
+    a.href = link.url;
+    a.textContent = link.label;
+    a.className = "hover:underline";
+    li.appendChild(a);
+    navMenu.appendChild(li);
+  });
+}
+
+// Initial load
+loadMenuLinks();
+
+// Listen for changes in other tabs/windows
+window.addEventListener('storage', (event) => {
+  if (event.key === 'menuLinks') {
+    loadMenuLinks();
+  }
+});
+</script>
 
   <!-- Main Content -->
   <main class="p-8">
