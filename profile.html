@@ -4,48 +4,25 @@
   <meta charset="UTF-8">
   <title>Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="auth.js"></script>
 </head>
 <body class="bg-gray-100">
 
   <!-- Static Header -->
-<header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <!-- Left: App Name -->
-  <div>
-    <h1 class="text-xl font-bold">My App</h1>
-  </div>
-
-  <!-- Right: Navigation + Logout + Welcome -->
-  <div class="flex flex-col items-end">
-    <div class="flex space-x-4">
-      <a href="dashboard.html" class="hover:underline">Dashboard</a>
-      <a href="profile.html" class="hover:underline">Profile</a>
-      <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-xl font-bold">My App</h1>
     </div>
-    <span id="welcome" class="text-sm font-thin mt-1"></span>
-  </div>
-</header>
 
-<script>
-  // Ensure user is logged in
-  const email = localStorage.getItem("userEmail");
-  if (!email) {
-    window.location.replace("index.html");
-  } else {
-    document.getElementById("welcome").innerText = `Welcome, ${email}`;
-  }
+    <div class="flex flex-col items-end">
+      <div class="flex space-x-4">
+        <a href="dashboard.html" class="hover:underline">Dashboard</a>
+        <a href="profile.html" class="hover:underline">Profile</a>
+        <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+      </div>
+      <span id="welcome" class="text-sm font-thin mt-1"></span>
+    </div>
+  </header>
 
-  // Logout button
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("loggedInUser");
-    window.location.replace("index.html");
-  });
-</script>
-
-
-
-  <!-- Main Content -->
   <main class="p-8">
     <h2 class="text-2xl font-bold mb-4">Profile</h2>
     <p>Email: <span id="profileEmail"></span></p>
@@ -63,9 +40,8 @@
 
     // Check login
     const email = localStorage.getItem("userEmail");
-    if (!email) {
-      window.location.replace("index.html");
-    } else {
+    if (!email) window.location.replace("index.html");
+    else {
       document.getElementById("welcome").innerText = `Welcome, ${email}`;
       document.getElementById("profileEmail").innerText = email;
       document.getElementById("profileUsername").innerText = email.split("@")[0];
