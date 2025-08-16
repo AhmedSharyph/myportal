@@ -7,34 +7,21 @@
   <script src="auth.js"></script>
 </head>
 <body class="bg-gray-100">
-            <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
-          Logout
-        </button>
-    <span id="welcome" class="font-medium"></span>
+
   <!-- Dynamic Header -->
- <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <div class="flex items-center space-x-6">
-    <h1 class="text-lg font-bold">My App</h1>
+  <div id="header"></div>
 
-      <nav id="navLinks">
-    <ul class="flex space-x-4">
-      <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
-      <li><a href="profile.html" class="hover:underline">Profile</a></li>
-      <li>
-
-      </li>
-    </ul>
-  </nav>
-  </div>
-
-
-</header>
-
-
-  <!-- Page Content -->
-  <main class="p-8">
+  <!-- Dashboard Content -->
+  <main id="mainContent" class="p-8">
     <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
-    <p>This is a protected page only accessible after login.</p>
+    <p>Welcome to your dashboard! This page is only accessible after login.</p>
+
+    <!-- Example dashboard cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+      <div class="bg-white p-4 rounded shadow">Card 1</div>
+      <div class="bg-white p-4 rounded shadow">Card 2</div>
+      <div class="bg-white p-4 rounded shadow">Card 3</div>
+    </div>
   </main>
 
   <!-- Dynamic Footer -->
@@ -47,11 +34,10 @@
       document.getElementById(id).innerHTML = html;
     }
 
-    // Load header & footer dynamically
     loadComponent("header", "header.html");
     loadComponent("footer", "footer.html");
 
-    // Check login for this page
+    // Ensure user is logged in
     requireLogin();
   </script>
 </body>
