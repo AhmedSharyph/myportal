@@ -1,1 +1,185 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Td Vaccination Card</title>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-6">
+
+  <!-- Search Box -->
+  <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Search Beneficiary</h2>
+    <div class="flex gap-2">
+      <input id="searchNid" type="text" placeholder="Enter National ID" 
+             class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-200">
+      <button onclick="searchBeneficiary()" 
+              class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        Search
+      </button>
+    </div>
+  </div>
+
+  <!-- Vaccination Card -->
+  <div id="card" class="hidden w-full max-w-lg mt-8 bg-white shadow-lg rounded-2xl p-6">
+    <h2 id="cardStatus" class="text-xl font-bold text-gray-800 mb-4"></h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm text-gray-600">National ID</label>
+        <input id="nid" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-100">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-600">Name</label>
+        <input id="name" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-100">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-600">Td1</label>
+        <input id="td1" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-100">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-600">Td2</label>
+        <input id="td2" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-100">
+      </div>
+      <div class="col-span-2">
+        <label class="block text-sm text-gray-600">Td Booster</label>
+        <input id="tdBooster" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-100">
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-end gap-3">
+      <button onclick="enableEditing()" 
+              class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">Edit</button>
+      <button onclick="saveData()" 
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Save</button>
+    </div>
+  </div>
+
+  <!-- Reusable Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 text-center">
+      <h3 id="modalTitle" class="text-lg font-semibold text-gray-800 mb-4"></h3>
+      <p id="modalMessage" class="text-gray-600 mb-6"></p>
+      <div class="flex justify-center gap-4">
+        <button id="modalYes" 
+                class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Yes</button>
+        <button id="modalNo" 
+                class="px-5 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">No</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+  let isNewClient = false;
+  let pendingNid = "";
+
+  // ---- Modal Logic ----
+  function showModal(title, message, yesCallback, noCallback) {
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalMessage").textContent = message;
+
+    const modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+
+    // Reset event listeners
+    const yesBtn = document.getElementById("modalYes");
+    const noBtn = document.getElementById("modalNo");
+    yesBtn.onclick = () => {
+      modal.classList.add("hidden");
+      yesCallback();
+    };
+    noBtn.onclick = () => {
+      modal.classList.add("hidden");
+      if (noCallback) noCallback();
+    };
+  }
+
+  async function searchBeneficiary() {
+    const beneficiaryNID = document.getElementById("searchNid").value.trim();
+    if (!beneficiaryNID) {
+      alert("Please enter a National ID");
+      return;
+    }
+    loadData(beneficiaryNID);
+  }
+
+  async function loadData(beneficiaryNID) {
+    pendingNid = beneficiaryNID;
+    const res = await fetch(`${API_URL}?action=query&Beneficiary Naitonal ID=${beneficiaryNID}`);
+    const data = await res.json();
+
+    if (data.length === 0) {
+      // Reusable modal for enrollment
+      showModal(
+        "Beneficiary not found",
+        "Do you want to enroll this child as a new client?",
+        startEnrollment,
+        () => location.reload()
+      );
+      return;
+    }
+
+    // Existing client flow
+    isNewClient = false;
+    const row = data[0];
+    document.getElementById("cardStatus").textContent = "Existing Beneficiary – View / Update";
+    document.getElementById("nid").value = row["Beneficiary Naitonal ID"] || "";
+    document.getElementById("name").value = row["Beneficiary Name"] || "";
+    document.getElementById("td1").value = row["Td1"] || "";
+    document.getElementById("td2").value = row["Td2"] || "";
+    document.getElementById("tdBooster").value = row["Td Booster"] || "";
+
+    // Lock fields with existing data
+    ["td1","td2","tdBooster"].forEach(id => {
+      const el = document.getElementById(id);
+      el.readOnly = !!el.value;
+      el.classList.toggle("bg-gray-100", !!el.value);
+    });
+
+    document.getElementById("card").classList.remove("hidden");
+  }
+
+  function enableEditing() {
+    ["name","td1","td2","tdBooster"].forEach(id => {
+      const el = document.getElementById(id);
+      el.readOnly = false;
+      el.classList.remove("bg-gray-100");
+    });
+  }
+
+  async function saveData() {
+    const updates = {
+      action: isNewClient ? "write" : "update",
+      "Beneficiary Naitonal ID": document.getElementById("nid").value,
+      "Beneficiary Name": document.getElementById("name").value,
+      Td1: document.getElementById("td1").value,
+      Td2: document.getElementById("td2").value,
+      "Td Booster": document.getElementById("tdBooster").value
+    };
+
+    const params = new URLSearchParams(updates).toString();
+    const res = await fetch(`${API_URL}?${params}`);
+    const result = await res.json();
+    alert(result.message);
+
+    loadData(document.getElementById("nid").value);
+  }
+
+  function startEnrollment() {
+    isNewClient = true;
+    document.getElementById("cardStatus").textContent = "New Beneficiary – Initiation";
+    document.getElementById("nid").value = pendingNid;
+    document.getElementById("name").value = "";
+    document.getElementById("td1").value = "";
+    document.getElementById("td2").value = "";
+    document.getElementById("tdBooster").value = "";
+    enableEditing();
+    document.getElementById("card").classList.remove("hidden");
+  }
+</script>
+</body>
+</html>
