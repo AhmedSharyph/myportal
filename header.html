@@ -1,15 +1,19 @@
-<header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+<header class="bg-blue-700 text-white shadow-md p-4 flex justify-between items-center">
+  <!-- Left: App logo/name + Welcome -->
   <div class="flex items-center space-x-6">
-    <h1 class="text-lg font-bold">My App</h1>
+    <h1 class="text-xl font-bold">My App</h1>
     <span id="welcome" class="font-medium"></span>
   </div>
 
+  <!-- Right: Navigation -->
   <nav id="navLinks" class="hidden">
     <ul class="flex space-x-4">
-      <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
-      <li><a href="profile.html" class="hover:underline">Profile</a></li>
+      <li><a href="dashboard.html" class="px-3 py-1 rounded hover:bg-blue-600 transition">Dashboard</a></li>
+      <li><a href="profile.html" class="px-3 py-1 rounded hover:bg-blue-600 transition">Profile</a></li>
       <li>
-        <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+        <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600 transition">
+          Logout
+        </button>
       </li>
     </ul>
   </nav>
@@ -17,9 +21,9 @@
 
 <script src="auth.js"></script>
 <script>
-  if (window.location.pathname.endsWith("header.html")) {
-    window.location.replace("index.html"); // prevent direct access
-  } else {
+  if (!window.location.pathname.endsWith("header.html")) {
     initHeader();
+  } else {
+    window.location.replace("index.html");
   }
 </script>
