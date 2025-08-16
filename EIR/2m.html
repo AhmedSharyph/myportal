@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Children Aged 0-2 Months</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+  <div class="max-w-full mx-auto">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Children Aged 0-2 Months</h1>
+    <div class="overflow-x-auto bg-white shadow rounded-lg">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">MDV Number</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Foolhumaa Form Number</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">National ID</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Full Name</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">DOB</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Sex</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Age</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Address</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Mother's Name</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Mother's ID</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Contact Number</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Vaccination Details</th>
+          </tr>
+        </thead>
+        <tbody id="childrenTable" class="divide-y divide-gray-200">
+          <tr>
+            <td colspan="12" class="px-4 py-4 text-center text-gray-500">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const DATA_URL = 'https://script.google.com/macros/s/AKfycbyBlkPOqEsEZJYn1J_BbDC-4rF9utdn8rbHPxmT_mYY2UVwsqm8CuMORa3iSX0qHjAc/exec';
+
+    async function fetchChildren() {
+      try {
+        const response = await fetch(DATA_URL);
+        const data = await response.json();
+
+        const today = new Date();
+        const filtered = data.filter(child => {
+          const dob = new Date(child.DOB);
+          const ageMonths = (today.getFullYear() - dob.getFullYear()) * 12 + (today.getMonth() - dob.getMonth());
+          return ageMonths >= 0 && ageMonths <= 2;
+        });
+
+        const tbody = document.getElementById('childrenTable');
+        tbody.innerHTML = '';
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-4 text-center text-gray-500">No children in this age range.</td></tr>';
+        } else {
+          filtered.forEach(child => {
+            tbody.innerHTML += `
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2 text-gray-800">${child['MDV Number'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child['Foolhumaa Form Number'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child['Beneficiary Naitonal ID'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child['Full Name of the Beneficiary'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child.DOB || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child.Sex || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child.Age || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child['Current Address'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child["Mother's Name"] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child["Mother's National ID"] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child['Primary Contact Number'] || '-'}</td>
+                <td class="px-4 py-2 text-gray-800">${child.Vaccination || '-'}</td>
+              </tr>
+            `;
+          });
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        const tbody = document.getElementById('childrenTable');
+        tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-4 text-center text-red-500">Failed to load data.</td></tr>';
+      }
+    }
+
+    fetchChildren();
+  </script>
+</body>
+</html>
