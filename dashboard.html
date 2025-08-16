@@ -1,48 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="auth.js"></script> <!-- handles auth check and logout -->
-<script>
-document.addEventListener("DOMContentLoaded", ()=>{
-  if(!localStorage.getItem("userEmail")){
-    window.location.href = "index.html";
-  } else {
-    document.getElementById("welcome").innerText = `Welcome, ${localStorage.getItem("userEmail")}`;
-  }
-});
-</script>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="auth.js"></script> <!-- handles auth check and logout -->
 </head>
 <body class="bg-gray-100">
-<!-- Dynamic Header -->
-<div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <div id="welcome" class="font-bold">Welcome</div>
-  <button onclick="logout()" class="bg-red-500 p-2 rounded hover:bg-red-600">Logout</button>
-</div>
 
-<div class="p-8">
-  <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
-  <p>This is a protected page only accessible after login.</p>
-</div>
+  <!-- Dynamic Header -->
+  <div id="header"></div>
 
-<script>
-async function loadComponent(id, file) {
-  const res = await fetch(file);
-  const html = await res.text();
-  document.getElementById(id).innerHTML = html;
-}
+  <!-- Page Content -->
+  <main class="p-8">
+    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+    <p>This is a protected page only accessible after login.</p>
+  </main>
 
-// Load header & footer dynamically
-loadComponent("header", "header.html");
-loadComponent("footer", "footer.html");
+  <!-- Dynamic Footer -->
+  <div id="footer"></div>
 
-// Check login
-if (!localStorage.getItem("userEmail")) {
-  alert("You must login first!");
-  window.location.href = "index.html";
-}
-</script>
+  <script>
+    async function loadComponent(id, file) {
+      const res = await fetch(file);
+      const html = await res.text();
+      document.getElementById(id).innerHTML = html;
+    }
+
+    // Load header & footer dynamically
+    loadComponent("header", "header.html");
+    loadComponent("footer", "footer.html");
+
+    // 🔒 Check login before rendering dashboard
+    if (!localStorage.getItem("userEmail") && !localStorage.getItem("loggedInUser")) {
+      alert("You must login first!");
+      window.location.replace("index.html");
+    }
+  </script>
 </body>
 </html>
