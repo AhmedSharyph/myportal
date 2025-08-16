@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="auth.js"></script>
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdSJ_2mNS8XODvPlGJFPICHYUIA8qc26PodQ1f7Z0oWbOF430LMLo_3vIeMIK66UGzuw/exec";
+
+let usersData = [];
+
+// Check admin login
+document.addEventListener("DOMContentLoaded", async () => {
+  const email = localStorage.getItem("userEmail");
+  const isAdmin = localStorage.getItem("isAdmin");
+  if(!email || isAdmin !== "Yes") return alert("Access denied."), window.location.href="index.html";
+
+  await loadUsers();
+});
+
+// Fetch all users
+async function loadUsers(){
+  const formData = new URLSearchParams({ action: "getSheetData", sheetName: "userDetails" });
+  const res = await fetch(WEB_APP_URL, { method: "POST", body: formData });
+  const result = await res.json();
+  if(result.success){
+    usersData = result.data.slice(1); // skip header
+    renderTable();
+  }
+}
+
+// Render table
+function renderTable(){
+  const tbody = document.getElementById("usersTableBody");
+  tbody.innerHTML = "";
+  usersData.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="border px-2 py-1">${row[0]}</td>
+      <td class="border px-2 py-1">${row[4] || ""}</td>
+      <td class="border px-2 py-1">${row[6] || "No"}</td>
+      <td class="border px-2 py-1 flex gap-2">
+        <button onclick="editUser(${i})" class="bg-blue-500 p-1 text-white rounded">Edit</button>
+        <button onclick="deleteUser(${i})" class="bg-red-500 p-1 text-white rounded">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Edit user
+function editUser(index){
+  const row = usersData[index];
+  const newName = prompt("Enter new name:", row[4] || "");
+  const newProfilePic = prompt("Enter new profile picture URL:", row[5] || "");
+  if(newName === null && newProfilePic === null) return;
+
+  const formData = new URLSearchParams({
+    action: "updateProfile",
+    email: row[0],
+    name: newName || row[4],
+    profilePicUrl: newProfilePic || row[5]
+  });
+
+  fetch(WEB_APP_URL, { method: "POST", body: formData })
+    .then(r => r.json())
+    .then(res => { alert(res.message); loadUsers(); });
+}
+
+// Delete user
+function deleteUser(index){
+  if(!confirm("Are you sure to delete this user?")) return;
+  const row = usersData[index];
+  const formData = new URLSearchParams({
+    action: "deleteRow",
+    sheetName: "userDetails",
+    row: index + 2 // +2 because header + zero-based index
+  });
+  fetch(WEB_APP_URL, { method: "POST", body: formData })
+    .then(r => r.json())
+    .then(res => { alert(res.message); loadUsers(); });
+}
+
+// Add new user
+async function addUser(e){
+  e.preventDefault();
+  const email = document.getElementById("newEmail").value;
+  const password = document.getElementById("newPassword").value;
+
+  const formData = new URLSearchParams({
+    action: "register",
+    email,
+    password
+  });
+
+  const res = await fetch(WEB_APP_URL, { method: "POST", body: formData });
+  const result = await res.json();
+  alert(result.message);
+  if(result.success) document.getElementById("addUserForm").reset();
+  await loadUsers();
+}
+</script>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header -->
+<div class="bg-gray-800 text-white p-4 flex justify-between items-center">
+  <div>Admin Panel</div>
+  <button onclick="logout()" class="bg-red-600 p-2 rounded hover:bg-red-700">Logout</button>
+</div>
+
+<div class="p-6 max-w-5xl mx-auto">
+
+  <!-- Add User -->
+  <form id="addUserForm" onsubmit="addUser(event)" class="mb-6 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-bold mb-2">Add New User</h2>
+    <input type="email" id="newEmail" placeholder="Email" required class="p-2 w-full mb-2 border rounded">
+    <input type="password" id="newPassword" placeholder="Password" required class="p-2 w-full mb-2 border rounded">
+    <button type="submit" class="bg-green-600 text-white p-2 rounded hover:bg-green-700">Add User</button>
+  </form>
+
+  <!-- Users Table -->
+  <div class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-bold mb-2">Registered Users</h2>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr>
+          <th class="border px-2 py-1">Email</th>
+          <th class="border px-2 py-1">Name</th>
+          <th class="border px-2 py-1">Admin</th>
+          <th class="border px-2 py-1">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody"></tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
