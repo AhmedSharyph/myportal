@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - My App</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="flex items-center justify-center min-h-screen bg-gray-100">
-  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
-    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-    <form id="loginForm" class="space-y-4">
-      <input type="email" id="loginEmail" placeholder="Email" class="w-full border px-3 py-2 rounded" required>
-      <input type="password" id="loginPassword" placeholder="Password" class="w-full border px-3 py-2 rounded" required>
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login</button>
-    </form>
-    <p class="text-sm mt-4 text-center">Don’t have an account? <a href="register.html" class="text-blue-600 hover:underline">Register</a></p>
-  </div>
+<meta charset="UTF-8">
+<title>Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdSJ_2mNS8XODvPlGJFPICHYUIA8qc26PodQ1f7Z0oWbOF430LMLo_3vIeMIK66UGzuw/exec";
 
-  <script src="main.js"></script>
+async function loginUser(e){
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const formData = new URLSearchParams({
+    action: "login",
+    email: email,
+    password: password
+  });
+
+  const res = await fetch(WEB_APP_URL, {method:"POST", body:formData});
+  const result = await res.json();
+
+  if(result.success){
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("isAdmin", result.isAdmin || "No");
+    window.location.href = "dashboard.html";
+  }else{
+    alert(result.message);
+  }
+}
+</script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded shadow-md w-80">
+  <h2 class="text-xl font-bold mb-4 text-center">Login</h2>
+  <form onsubmit="loginUser(event)">
+    <input type="email" id="email" placeholder="Email" required class="w-full p-2 mb-3 border rounded">
+    <input type="password" id="password" placeholder="Password" required class="w-full p-2 mb-3 border rounded">
+    <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+  </form>
+  <p class="mt-4 text-sm text-gray-600">Contact administrator for registration.</p>
+</div>
 </body>
 </html>
