@@ -8,43 +8,51 @@
 </head>
 <body class="bg-gray-100">
 
-  <!-- Dynamic Header -->
-  <div id="header"></div>
+  <!-- Static Header -->
+  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <h1 class="text-xl font-bold">My App</h1>
+      <span id="welcome" class="font-medium"></span>
+    </div>
+    <nav class="flex space-x-4">
+      <a href="dashboard.html" class="hover:underline">Dashboard</a>
+      <a href="profile.html" class="hover:underline">Profile</a>
+      <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">Logout</button>
+    </nav>
+  </header>
 
   <!-- Main Content -->
   <main class="p-8">
     <h2 class="text-2xl font-bold mb-4">Profile</h2>
-    <p>Your profile information:</p>
-    <div class="bg-white p-6 rounded shadow mt-4 max-w-md">
-      <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-      <p><strong>Username:</strong> <span id="profileUsername"></span></p>
-    </div>
+    <p>Email: <span id="profileEmail"></span></p>
+    <p>Username: <span id="profileUsername"></span></p>
   </main>
 
-  <!-- Dynamic Footer -->
-  <div id="footer"></div>
+  <footer class="bg-gray-200 text-gray-700 p-4 text-center mt-8">
+    &copy; <span id="year"></span> My App. Developed by 
+    <a href="https://ahmedshareef.mv" target="_blank" class="text-blue-600 hover:underline">AhmedShareef</a>
+  </footer>
 
   <script>
-    async function loadComponent(id, file) {
-      const res = await fetch(file);
-      const html = await res.text();
-      document.getElementById(id).innerHTML = html;
+    // Show current year
+    document.getElementById("year").innerText = new Date().getFullYear();
 
-      // Run initHeader after header is loaded
-      if (id === "header") {
-        initHeader();
-      }
+    // Check login
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      window.location.replace("index.html");
+    } else {
+      document.getElementById("welcome").innerText = `Welcome, ${email}`;
+      document.getElementById("profileEmail").innerText = email;
+      document.getElementById("profileUsername").innerText = email.split("@")[0];
     }
 
-    // Load header & footer
-    loadComponent("header", "header.html");
-    loadComponent("footer", "footer.html");
-
-    // Ensure user is logged in
-    const email = requireLogin();
-    // Display profile info
-    document.getElementById("profileEmail").innerText = email;
-    document.getElementById("profileUsername").innerText = email.split("@")[0];
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("loggedInUser");
+      window.location.replace("index.html");
+    });
   </script>
 
 </body>
