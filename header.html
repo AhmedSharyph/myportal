@@ -20,32 +20,30 @@
 </header>
 
 <script>
-  (function() {
-    // 🚫 Block direct access to header.html (always redirect)
+  document.addEventListener("DOMContentLoaded", () => {
+    // 🚫 Block direct access to header.html
     if (window.location.pathname.endsWith("header.html")) {
       window.location.replace("index.html");
       return;
     }
 
+    // 🔒 Check login
     const email = localStorage.getItem("userEmail") || localStorage.getItem("loggedInUser");
-
     if (!email) {
-      // Not logged in → redirect
       window.location.replace("index.html");
-    } else {
-      // Show welcome + nav only if logged in
-      document.getElementById("welcome").innerText = `Welcome, ${email}`;
-      document.getElementById("navLinks").classList.remove("hidden");
+      return;
     }
 
-    // Handle logout
+    // ✅ Show welcome + nav
+    document.getElementById("welcome").innerText = `Welcome, ${email}`;
+    document.getElementById("navLinks").classList.remove("hidden");
+
+    // 🚪 Handle logout
     const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("loggedInUser");
-        window.location.replace("index.html");
-      });
-    }
-  })();
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("loggedInUser");
+      window.location.replace("index.html");
+    });
+  });
 </script>
